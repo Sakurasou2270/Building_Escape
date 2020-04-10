@@ -4,6 +4,7 @@
 #include "GameFramework/Actor.h"
 #include "Engine/World.h"
 #include "GameFramework/PlayerController.h"
+#include "TimerManager.h"
 
 // Sets default values for this component's properties
 UOpenDoor::UOpenDoor()
@@ -21,7 +22,7 @@ void UOpenDoor::BeginPlay()
 	InitialYaw = GetOwner()->GetActorRotation().Yaw;
 	CurrentYaw = InitialYaw;
 	// += Compound Assignment Operator
-	TargetYaw += InitialYaw;
+	OpenAngle += InitialYaw;
 	ActorThatOpens = GetWorld()->GetFirstPlayerController()->GetPawn();
 
 	if (!PressurePlate)
@@ -37,14 +38,29 @@ void UOpenDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 
 	if (PressurePlate && PressurePlate->IsOverlappingActor(ActorThatOpens))
 	{
-	OpenDoor(DeltaTime);
+		OpenDoor(DeltaTime);
+		DoorLastOpened = GetWorld()->GetTimeSeconds();
+	}
+	else
+	{
+		if (GetWorld()->GetTimeSeconds() - DoorLastOpened > DoorCloseDelay)
+		{
+			CloseDoor(DeltaTime);
+		}
 	}
 }
 
 void UOpenDoor::OpenDoor(float Seconds)
 {
-	// CurrentYaw = FMath::(CurrentYaw, TargetYaw, DeltaTime, 2);
-	CurrentYaw = FMath::Lerp(CurrentYaw, TargetYaw, Seconds * .75);
+	CurrentYaw = FMath::Lerp(CurrentYaw, OpenAngle, Seconds * DoorOpenSpeed);
+	FRotator DoorRotation = GetOwner()->GetActorRotation();
+	DoorRotation.Yaw = CurrentYaw;
+	GetOwner()->SetActorRotation(DoorRotation);
+}
+
+void UOpenDoor::CloseDoor(float Seconds)
+{
+	CurrentYaw = FMath::Lerp(CurrentYaw, InitialYaw, Seconds * DoorCloseSpeed);
 	FRotator DoorRotation = GetOwner()->GetActorRotation();
 	DoorRotation.Yaw = CurrentYaw;
 	GetOwner()->SetActorRotation(DoorRotation);
