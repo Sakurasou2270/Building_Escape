@@ -1,7 +1,9 @@
 {
 	"files.exclude": {
+		"C:/Users/Akasa/Desktop/UE4/Building_Escape/.git": true,
 		"C:/Users/Akasa/Desktop/UE4/Building_Escape/.vscode": true,
 		"C:/Users/Akasa/Desktop/UE4/Building_Escape/Content": true,
-		"C:/Users/Akasa/Desktop/UE4/Building_Escape/Intermediate": true
+		"C:/Users/Akasa/Desktop/UE4/Building_Escape/Intermediate": true,
+		"C:/Users/Akasa/Desktop/UE4/Building_Escape/Saved": true
 	}
 }

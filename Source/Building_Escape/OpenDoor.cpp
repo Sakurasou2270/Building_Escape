@@ -4,7 +4,6 @@
 #include "GameFramework/Actor.h"
 #include "Engine/World.h"
 #include "GameFramework/PlayerController.h"
-#include "TimerManager.h"
 
 // Sets default values for this component's properties
 UOpenDoor::UOpenDoor()
@@ -23,7 +22,7 @@ void UOpenDoor::BeginPlay()
 	CurrentYaw = InitialYaw;
 	// += Compound Assignment Operator
 	OpenAngle += InitialYaw;
-	ActorThatOpens = GetWorld()->GetFirstPlayerController()->GetPawn();
+	ActorThatOpens = GetWorld()->GetFirstPlayerController()->GetPawn();\
 
 	if (!PressurePlate)
 	{
