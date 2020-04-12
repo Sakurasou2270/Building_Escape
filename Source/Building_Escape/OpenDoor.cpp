@@ -21,14 +21,28 @@ void UOpenDoor::BeginPlay()
 {
 	Super::BeginPlay();
 
+	CheckForPressurePlate();
+	CheckForAudioComponent();
 	InitialYaw = GetOwner()->GetActorRotation().Yaw;
 	CurrentYaw = InitialYaw;
 	// += Compound Assignment Operator
 	OpenAngle += InitialYaw;
+}
 
+void UOpenDoor::CheckForPressurePlate() const
+{
 	if (!PressurePlate)
 	{
 		UE_LOG(LogTemp, Error, TEXT("%s Has No Pressure Plate"), *GetOwner()->GetName());
+	}
+}
+
+void UOpenDoor::CheckForAudioComponent()
+{
+	AudioComponent = GetOwner()->FindComponentByClass<UAudioComponent>();
+	if (!AudioComponent)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Sound Component Not Attached To %s"), *GetOwner()->GetName());
 	}
 }
 
@@ -57,6 +71,17 @@ void UOpenDoor::OpenDoor(float Seconds)
 	FRotator DoorRotation = GetOwner()->GetActorRotation();
 	DoorRotation.Yaw = CurrentYaw;
 	GetOwner()->SetActorRotation(DoorRotation);
+
+	CloseDoorSound = false;
+	if (!AudioComponent)
+	{
+		return;
+	}
+	if (!OpenDoorSound)
+	{
+		AudioComponent->Play();
+		OpenDoorSound = true;
+	}
 }
 
 void UOpenDoor::CloseDoor(float Seconds)
@@ -65,6 +90,18 @@ void UOpenDoor::CloseDoor(float Seconds)
 	FRotator DoorRotation = GetOwner()->GetActorRotation();
 	DoorRotation.Yaw = CurrentYaw;
 	GetOwner()->SetActorRotation(DoorRotation);
+
+	OpenDoorSound = false;
+	if (!AudioComponent)
+	{
+		return;
+	}
+
+	if (!CloseDoorSound)
+	{
+		AudioComponent->Play();
+		CloseDoorSound = true;
+	}
 }
 
 float UOpenDoor::TotalMassOfActors() const

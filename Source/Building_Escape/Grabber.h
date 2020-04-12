@@ -24,7 +24,11 @@ protected:
 
 private:
 	float Reach = 150.f;
+
+	UPROPERTY()
 	UPhysicsHandleComponent *PhysicsHandle = nullptr;
+
+	UPROPERTY()
 	UInputComponent *InputComponent = nullptr;
 
 	void CheckForPhysicsHandle();

@@ -3,7 +3,6 @@
 #include "Grabber.h"
 #include "GameFramework/PlayerController.h"
 #include "Engine/World.h"
-#include "DrawDebugHelpers.h"
 
 #define OUT
 
@@ -38,6 +37,7 @@ void UGrabber::CheckForPhysicsHandle()
 void UGrabber::SetupInput()
 {
 	// Checking For InputComponent
+
 	InputComponent = GetOwner()->FindComponentByClass<UInputComponent>();
 	if (InputComponent)
 	{
@@ -98,16 +98,6 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 
 FHitResult UGrabber::GetFirstPhysicsBodyInReach() const
 {
-	// DrawDebugLine(
-	// 	GetWorld(),
-	// 	PlayerViewPointLocation,
-	// 	LineTraceEnd,
-	// 	FColor::Magenta,
-	// 	false,
-	// 	0.f,
-	// 	0,
-	// 	5.f);
-
 	// Filtering What Physics Channel To Hit
 	FHitResult Hit;
 	FCollisionQueryParams TraceParams(FName(TEXT("")), false, GetOwner());

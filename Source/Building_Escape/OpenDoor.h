@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "Engine/TriggerVolume.h"
+#include "Components/AudioComponent.h"
 #include "OpenDoor.generated.h"
 
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
@@ -20,6 +21,8 @@ public:
 
 	void OpenDoor(float Seconds);
 	void CloseDoor(float Seconds);
+	void CheckForPressurePlate() const;
+	void CheckForAudioComponent();
 	float TotalMassOfActors() const;
 
 protected:
@@ -30,6 +33,8 @@ private:
 	float InitialYaw;
 	float CurrentYaw;
 	float DoorLastOpened = 0.f;
+	bool OpenDoorSound = false;
+	bool CloseDoorSound = true;
 
 	UPROPERTY(EditAnywhere)
 	float OpenAngle = 90.f;
@@ -48,4 +53,7 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	ATriggerVolume *PressurePlate = nullptr;
+
+	UPROPERTY()
+	UAudioComponent *AudioComponent = nullptr;
 };
