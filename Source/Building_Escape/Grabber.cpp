@@ -28,6 +28,7 @@ void UGrabber::CheckForPhysicsHandle()
 {
 	// Check For PhysicsHandleComponent
 	PhysicsHandle = GetOwner()->FindComponentByClass<UPhysicsHandleComponent>();
+	// (!PhysicsHandle)
 	if (PhysicsHandle == nullptr)
 	{
 		UE_LOG(LogTemp, Error, TEXT("PhysicsHandle Is Not Attached To Component %s"), *GetOwner()->GetName());
@@ -51,10 +52,15 @@ void UGrabber::Grab()
 	GetPlayersReach();
 	FHitResult HitResult = GetFirstPhysicsBodyInReach();
 	UPrimitiveComponent *ComponentToGrab = HitResult.GetComponent();
+	AActor *ActorHit = HitResult.GetActor();
 
 	// IF We Hit Something Attach A PhysicsHandleComponent
-	if (HitResult.GetActor())
+	if (ActorHit)
 	{
+		if (!PhysicsHandle)
+		{
+			return;
+		}
 		// Get Any Actors With Physics Body Collision Channel Then Attach PhysicsBodyComponent
 		PhysicsHandle->GrabComponentAtLocation(
 			ComponentToGrab,
@@ -66,6 +72,10 @@ void UGrabber::Grab()
 void UGrabber::StopGrabbing()
 {
 	// Remove PhysicsHandleComponent
+	if (!PhysicsHandle)
+	{
+		return;
+	}
 	PhysicsHandle->ReleaseComponent();
 }
 
@@ -75,6 +85,10 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	// If The PhysicsHandleComponent Is Attached
+	if (!PhysicsHandle)
+	{
+		return;
+	}
 	if (PhysicsHandle->GrabbedComponent)
 	{
 		// Move The Object Were Holding
@@ -84,7 +98,6 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 
 FHitResult UGrabber::GetFirstPhysicsBodyInReach() const
 {
-
 	// DrawDebugLine(
 	// 	GetWorld(),
 	// 	PlayerViewPointLocation,
